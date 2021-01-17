@@ -1,4 +1,4 @@
-package panda.guest.graphics;
+package panda.guest.ui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
