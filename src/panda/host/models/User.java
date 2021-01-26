@@ -22,6 +22,12 @@ public class User {
         this.password = "";
     }
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.permissions = 0;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if(obj.getClass().equals(User.class)){
