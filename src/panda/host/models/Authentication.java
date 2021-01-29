@@ -1,18 +1,35 @@
 package panda.host.models;
 
+import panda.host.utils.Panda;
+
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 public class Authentication {
     private int code; // 0 = Credentials don't match any user, 1 = User found
     private User user;
     private Timestamp date;
+    private boolean valid;
+    private String codeMeaning;
 
     public Authentication(){
     }
 
     public Authentication(int code) {
         this.code = code;
+        this.user = new User(Panda.DEFAULT_GUEST_NAME);
+        this.date = Timestamp.from(Instant.now());
+    }
+
+    public Authentication(boolean asGuest) {
+        if(asGuest){
+            this.code = 2;
+        } else {
+            this.code = 0;
+        }
+        this.user = new User(Panda.DEFAULT_GUEST_NAME);
+        this.date = Timestamp.from(Instant.now());
     }
 
     public Authentication(int code, User user, Timestamp date) {
@@ -42,6 +59,9 @@ public class Authentication {
             case 1 -> {
                 return "User found";
             }
+            case 2 -> {
+                return "Guest session";
+            }
             default -> {
                 return "Unknown code";
             }
@@ -49,7 +69,7 @@ public class Authentication {
     }
 
     public boolean isValid(){
-        // Since an authentication is only valid when its code is equal to 1
+        // An authentication is only valid when its code is equal to 1 (Guest sessions are not considered as valid)
         return code == 1;
     }
 

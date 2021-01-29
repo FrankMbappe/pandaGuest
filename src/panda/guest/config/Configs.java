@@ -20,8 +20,9 @@ public class Configs {
         try{
             //System.out.println("[Configs, get()] | Configurations' file content:\n" + config.toString());
             return mapper.readValue(file, Authentication.class);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+//            e.printStackTrace();
+            System.err.println("[Configs, getSavedAuth] | Failed to deserialize configs file.");
             return null;
         }
     }
@@ -35,10 +36,15 @@ public class Configs {
         try {
             mapper.writeValue(file, auth);
             Current.auth = auth;
+            System.out.println("[Configs, saveAuth()] | Configurations has been saved.");
             return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public static boolean fileIsValid(){
+        return getSavedAuth() != null && getSavedAuth().isValid();
     }
 }

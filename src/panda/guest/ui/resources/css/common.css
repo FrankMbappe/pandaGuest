@@ -86,6 +86,11 @@
     -fx-background-size: contain;
     -fx-background-repeat: no-repeat;
 }
+.icon-logout{
+    -fx-background-image: url("../images/icon_logout.png");
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+}
 
 /* ---  IMAGE SIZES  --- */
 .height-small{
@@ -225,3 +230,17 @@
         .check-box:selected .mark {
             -fx-background-color: white;
         }
+
+/* CIRCLES */
+.circ-server-status {
+    -fx-stroke-width: 20;
+    -fx-stroke: #e30b0b;
+}
+    .circ-server-status.connected{
+        -fx-stroke: #4CAF50;
+    }
+
+/* COMBO BOXES */
+.combo-box{
+
+}

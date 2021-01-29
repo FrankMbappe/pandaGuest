@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.shape.Circle?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      styleClass="root-pane"
+      stylesheets="@../resources/css/common.css, @../resources/css/home.css"
+      fx:controller="panda.guest.ui.controllers.HomeController">
+
+    <HBox styleClass="title-bar">
+        <Circle fx:id="circ_serverStatus" styleClass="circ-server-status" HBox.hgrow="NEVER"/>
+        <StackPane HBox.hgrow="ALWAYS"/>
+        <HBox styleClass="search-box" HBox.hgrow="NEVER">
+            <Button fx:id="btn_postAdd" HBox.hgrow="NEVER" styleClass="image-button, icon-add, icon" onAction="#addPost" />
+            <Button fx:id="btn_logOut" styleClass="image-button, icon-logout, icon" onAction="#logOut" />
+            <Button fx:id="btn_refresh" styleClass="image-button, icon-refresh, icon" onAction="#refresh" />
+            <TextField styleClass="input-box-text-field" promptText="Search..."/>
+        </HBox>
+    </HBox>
+
+    <VBox styleClass="flow">
+
+        <!-- TITLE -->
+        <Label styleClass="big-title" text="Hello, there's the news"/>
+
+
+        <!-- FILTERS -->
+        <HBox styleClass="filters-box">
+
+            <!-- Sort by -->
+            <HBox styleClass="filter-selector">
+                <Label styleClass="lb-filter-name" text="Sort by:"/>
+                <ComboBox fx:id="cb_sortBy"/>
+            </HBox>
+
+            <!-- Display only -->
+            <HBox styleClass="filter-selector">
+                <Label styleClass="lb-filter-name" text="Display only:"/>
+                <ComboBox fx:id="cb_filterFileType"/>
+            </HBox>
+
+            <!-- School -->
+            <HBox styleClass="filter-selector">
+                <Label styleClass="lb-filter-name" text="School:"/>
+                <ComboBox fx:id="cb_filterSchool"/>
+            </HBox>
+
+            <!-- Speciality -->
+            <HBox styleClass="filter-selector">
+                <Label styleClass="lb-filter-name" text="Speciality:"/>
+                <ComboBox fx:id="cb_filterSpeciality"/>
+            </HBox>
+        </HBox>
+
+
+        <!-- POST FLOW -->
+        <ListView fx:id="list_postFlow" styleClass="list-post-flow">
+            <!-- POST -->
+<!--            <VBox styleClass="vbox-post">-->
+
+<!--                &lt;!&ndash; POST - Title &ndash;&gt;-->
+<!--                <HBox styleClass="hbox-post-title">-->
+
+<!--                    &lt;!&ndash; POST - Title - Username &ndash;&gt;-->
+<!--                    <HBox styleClass="hbox-post-user-name">-->
+<!--                        <StackPane fx:id="stk_postUserPhoto" styleClass="stk-post-user-photo"/>-->
+<!--                        <VBox>-->
+<!--                            <Label fx:id="lb_postUserName" styleClass="lb-post-user-name" text="Frank KAMCHE"/>-->
+<!--                            <Label fx:id="lb_postUserRole" styleClass="lb-post-user-role" text="Student"/>-->
+<!--                        </VBox>-->
+<!--                    </HBox>-->
+
+<!--                    &lt;!&ndash; POST - Title - Space-between &ndash;&gt;-->
+<!--                    <StackPane HBox.hgrow="ALWAYS"/>-->
+
+<!--                    &lt;!&ndash; POST - Title - Info &ndash;&gt;-->
+<!--                    <HBox styleClass="hbox-post-info">-->
+<!--                        <Label fx:id="lb_tags" styleClass="lb-post-tags" text="SEAS,BTech,SWE,Level3"/>-->
+
+<!--                        <Separator styleClass="separator-v"/>-->
+
+<!--                        <HBox styleClass="hbox-post-last-update">-->
+<!--                            <Label styleClass="lb-post-lb-last-update" text="Last update:"/>-->
+<!--                            <Label styleClass="lb-post-val-last-update" fx:id="lb_postLastUpdate" text="Today, 8:58 AM"/>-->
+<!--                        </HBox>-->
+<!--                    </HBox>-->
+
+<!--                </HBox>-->
+
+<!--                &lt;!&ndash; POST - File &ndash;&gt;-->
+<!--                <HBox styleClass="hbox-post-file">-->
+<!--                    &lt;!&ndash; POST - File - Info &ndash;&gt;-->
+<!--                    <HBox styleClass="hbox-post-file-info">-->
+<!--                        <StackPane styleClass="stk-post-file-photo"/>-->
+<!--                        <VBox styleClass="vbox-post-file-name">-->
+<!--                            <Label styleClass="lb-post-file-name" text="BTECH SWE Time table.pdf" />-->
+<!--                            <Label styleClass="lb-post-file-info" text="PDF File | 785.6 KB"/>-->
+<!--                        </VBox>-->
+<!--                    </HBox>-->
+
+<!--                    &lt;!&ndash; POST - File - Space-between &ndash;&gt;-->
+<!--                    <StackPane HBox.hgrow="ALWAYS"/>-->
+
+<!--                    &lt;!&ndash; POST - File - Download &ndash;&gt;-->
+<!--                    <Button styleClass="btn-post-file-download" text="Download"/>-->
+<!--                </HBox>-->
+
+<!--            </VBox>-->
+
+        </ListView>
+
+    </VBox>
+
+</VBox>

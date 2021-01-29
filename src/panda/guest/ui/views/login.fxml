@@ -12,6 +12,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.CheckBox?>
+
 <GridPane xmlns="http://javafx.com/javafx/11.0.1"
           xmlns:fx="http://javafx.com/fxml/1"
           stylesheets="@../resources/css/login.css, @../resources/css/common.css"
@@ -35,7 +36,7 @@
         <HBox alignment="CENTER">
             <VBox styleClass="input-box-text">
                 <Label styleClass="input-box-text-label" text="Username" />
-                <TextField fx:id="txt_db_username" promptText="Username" styleClass="input-box-text-field" />
+                <TextField fx:id="txt_username" promptText="Username" styleClass="input-box-text-field" />
                 <Label fx:id="lb_hintLoginError" styleClass="input-box-text-hint" text="Sorry, no users found with these credentials." />
             </VBox>
         </HBox>
@@ -43,7 +44,7 @@
         <HBox alignment="CENTER">
             <VBox styleClass="input-box-text">
                 <Label styleClass="input-box-text-label" text="Password" />
-                <PasswordField fx:id="txt_db_password" promptText="Password" styleClass="input-box-text-field" />
+                <PasswordField fx:id="txt_password" promptText="Password" styleClass="input-box-text-field" />
             </VBox>
         </HBox>
 
@@ -53,7 +54,7 @@
 
         <HBox styleClass="submit-box">
             <Button fx:id="btn_validate" onAction="#validate" styleClass="submit-button" text="Validate" />
-            <Button fx:id="btn_cancel" onAction="#cancel" text="Cancel" />
+            <Button fx:id="btn_joinAsGuest" onAction="#joinAsGuest" text="Join as guest" />
         </HBox>
     </VBox>
     <columnConstraints>

@@ -25,10 +25,10 @@ public class Test {
 //            // I put the retrieved authentication as the current one for the session
 //            Current.auth = auth;
 //        }
-        File file = new File("C:/Users/hp/Documents/Kevyn.jpg");
+        File file = new File("C:/Users/hp/Documents/easyship.txt");
         Post post = new Post(
                 "mabel.parrot18@myiuc.com",
-                "Hello there, this is the fifth test.",
+                "Hello there, this is the seventh test.",
                 "btech;swe;it",
                 file
         );

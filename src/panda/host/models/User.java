@@ -5,6 +5,9 @@ public class User {
     private String password;
     private int permissions;
 
+    // Will be used during config file's deserialization
+    public User(){ }
+
     public User(String username, String password, int permissions) {
         this.username = username;
         this.password = password;
