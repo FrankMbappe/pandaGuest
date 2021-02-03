@@ -150,7 +150,11 @@ public class Post {
     }
 
     public List<String> getTagsToList(){
-        return Arrays.asList(tags.split(Panda.DEFAULT_SPLIT_CHAR));
+        if(tags != null){
+            return Arrays.asList(tags.split(Panda.DEFAULT_SPLIT_CHAR));
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     public String getTagsToString(){
@@ -166,7 +170,6 @@ public class Post {
             }
             i++;
         }
-//        System.out.println(tagsToString.toString());
         return tagsToString.toString();
     }
 

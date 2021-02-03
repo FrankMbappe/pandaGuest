@@ -35,7 +35,7 @@ public class Stub {
 
         } catch (RemoteException | NotBoundException e){
             if (useLog) System.err.println("[Stub] | Cannot access the server..\r");
-            e.printStackTrace();
+            // if (useLog) e.printStackTrace();
         }
     }
 
@@ -46,7 +46,7 @@ public class Stub {
     public synchronized void register(){
         System.out.println(String.format("[Stub, register()] | Registering server with id: '%s'.", Current.ID));
         try {
-            remote.register(Current.ID, new Gson().toJson(new Stub(true)));
+            remote.register(Current.ID, new SyncChannelImpl());
 
         } catch (RemoteException e) {
             System.out.println(String.format("[Stub, register()] | Failed to register. Id: '%s'.", Current.ID));

@@ -58,12 +58,8 @@ public class LoginController {
                         Current.auth = auth;
                     }
 
-                try {
-                    switchScene(btn_validate.getScene(), new HomeScene());
-
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
+                // And finally I switch to home scene
+                switchToHomeScene();
 
             } else {
                 lb_hintLoginError.setText("Sorry, no users found with these credentials.");
@@ -80,18 +76,19 @@ public class LoginController {
     public void joinAsGuest(ActionEvent actionEvent) {
         // I get a default auth (with Panda.DEFAULT_GUEST_NAME as the username), then I take it as my current auth
         Current.auth = new Authentication(Authentication.Status.GRANTED, Authentication.Type.GUEST);
-        try {
-            switchScene(btn_joinAsGuest.getScene(), new HomeScene());
 
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        // And then switch to home scene
+        switchToHomeScene();
 
     }
 
 
     // @REALTIME
     void setServerStatusInRealtime(){
+        // Initially
+        setServerStatus(Current.serverIsRunning.getValue());
+
+        // Listener
         Current.serverIsRunning.addListener(event -> {
             setServerStatus(Current.serverIsRunning.getValue());
             System.out.println("[LoginCtrl] | Server is running: " + Current.serverIsRunning.getValue());
@@ -111,6 +108,15 @@ public class LoginController {
             btn_validate.setDisable(true);
             btn_joinAsGuest.setDisable(true);
             //lb_serverStatus.setText("Server is disconnected");
+        }
+    }
+
+    void switchToHomeScene(){
+        try {
+            switchScene(btn_validate.getScene(), new HomeScene());
+
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 

@@ -27,7 +27,8 @@ import panda.host.utils.Current;
 import panda.host.utils.Panda;
 
 //import static panda.host.server.SyncChannelImpl.postObservableList;
-import java.util.ArrayList;
+import java.util.*;
+
 import static panda.guest.ui.models.UIModel.showErrorAlert;
 import static panda.guest.ui.models.UIModel.showInfoAlert;
 import static panda.host.utils.Panda.*;
@@ -59,10 +60,10 @@ public class HomeController {
     public void initialize() {
 
         // @TEST with dummy data
-        Current.postList = Dummy.posts;
+        // Current.postList = Dummy.posts;
 
-        // Initializing the current post list
-        // Current.postList.setAll(new Stub(true).getPosts());
+        // @INIT Initializing the current post list
+        Current.postList.setAll(new Stub(true).getPosts());
 
         // Hiding nodes depending on the user privileges
         applyPrivileges();
@@ -87,6 +88,10 @@ public class HomeController {
     }
 
     private void setPostListInRealtime() {
+        // Initially
+        fillPostLayout(Current.postList);
+
+        // Listener
         Current.postList.addListener((InvalidationListener) event -> {
             // Notifying the user that an update has been done
             notifyPostListHasBeenUpdated();
@@ -97,6 +102,10 @@ public class HomeController {
     }
 
     public void setServerStatusInRealtime(){
+        // Initially
+        setServerStatus(Current.serverIsRunning.getValue());
+
+        // Listener
         Current.serverIsRunning.addListener(event -> {
             setServerStatus(Current.serverIsRunning.getValue());
             System.out.println("[HomeCtrl] | Server is running: " + Current.serverIsRunning.getValue());
@@ -257,7 +266,7 @@ public class HomeController {
                     StackPane stkPostUserPhoto = new StackPane();
                     stkPostUserPhoto.getStyleClass().add("stk-post-user-photo"); // Author.Photo
                     VBox vBoxPostUserInfo = new VBox();
-                        lbPostUserName = new Label(post.getAuthorId()); // Author.Name
+                        lbPostUserName = new Label((post.getAuthorId() != null) ? post.getAuthorId() : "PandaHost"); // Author.Name
                         lbPostUserName.getStyleClass().add("lb-post-user-name");
                         lbPostUserRole = new Label("Student"); // Author.Role
                         lbPostUserRole.getStyleClass().add("lb-post-user-role");
