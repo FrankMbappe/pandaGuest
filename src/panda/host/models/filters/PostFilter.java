@@ -13,10 +13,20 @@ public class PostFilter implements Filter {
         this.schoolClassId = schoolClassId;
     }
 
+    @Deprecated
     public PostFilter(ArrayList<String> filtersSet){
         this.all = Boolean.parseBoolean(filtersSet.get(0));
         this.fileType = filtersSet.get(1);
         this.schoolClassId = filtersSet.get(2);
+    }
+
+    @Override
+    public String toString() {
+        return "PostFilter{" +
+                "all=" + all +
+                ", fileType='" + fileType + '\'' +
+                ", schoolClassId='" + schoolClassId + '\'' +
+                '}';
     }
 
     public boolean isAll() {

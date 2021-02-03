@@ -7,9 +7,11 @@ import panda.host.utils.Panda;
 
 import java.io.File;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class Post {
     private int id;
@@ -27,10 +29,12 @@ public class Post {
     private Timestamp uploadDate;
     private Timestamp lastUpdate;
 
-    public Post(int id, String authorId, String message, String tags) {
+    public Post(String authorId, String message, String tags) {
         this.authorId = authorId;
         this.message = message;
         this.tags = tags;
+        this.uploadDate = Timestamp.from(Instant.now());
+        this.lastUpdate = Timestamp.from(Instant.now());
     }
 
     public Post(String authorId, String message, String tags, File file){
@@ -38,11 +42,24 @@ public class Post {
         this.message = message;
         this.tags = tags;
         setFile(file);
+        this.uploadDate = Timestamp.from(Instant.now());
+        this.lastUpdate = Timestamp.from(Instant.now());
+    }
+
+    public Post(String authorId, String message, String tags, File file, Timestamp uploadDate, Timestamp lastUpdate){
+        this.authorId = authorId;
+        this.message = message;
+        this.tags = tags;
+        setFile(file);
+        this.uploadDate = uploadDate;
+        this.lastUpdate = lastUpdate;
     }
 
     public Post(String authorId, File file){
         this.authorId = authorId;
         setFile(file);
+        this.uploadDate = Timestamp.from(Instant.now());
+        this.lastUpdate = Timestamp.from(Instant.now());
     }
 
     public Post(int id, String authorId, String message, String tags, String fileId, String fileName, String fileExt, long fileSize, Timestamp uploadDate, Timestamp lastUpdate) {
@@ -72,13 +89,21 @@ public class Post {
         this.lastUpdate = lastUpdate;
     }
 
-    public Post(int id) {
-        this.id = id;
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", authorId='" + authorId + '\'' +
+                ", message='" + message + '\'' +
+                ", tags='" + tags + '\'' +
+                ", fileId='" + fileId + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", fileExt='" + fileExt + '\'' +
+                ", fileSize=" + Panda.convertLongSizeToString(fileSize) +
+                ", uploadDate=" + uploadDate +
+                ", lastUpdate=" + lastUpdate +
+                '}';
     }
-
-
-
-
 
     @Override
     public boolean equals(Object obj) {
@@ -88,8 +113,17 @@ public class Post {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, authorId);
+    }
+
     public boolean containsAFile(){
-        return fileToBytes != null && fileName != null;
+        return fileName != null;
+    }
+
+    public boolean containsAValidFile(){
+        return containsAFile() && fileToBytes != null;
     }
 
     public void setFile(File file){
@@ -120,7 +154,6 @@ public class Post {
     }
 
     public String getTagsToString(){
-        System.out.println("TEST");
         var tagsToList = getTagsToList();
         StringBuilder tagsToString = new StringBuilder();
         int i = 0;
@@ -133,7 +166,7 @@ public class Post {
             }
             i++;
         }
-        System.out.println(tagsToString.toString());
+//        System.out.println(tagsToString.toString());
         return tagsToString.toString();
     }
 
@@ -145,10 +178,6 @@ public class Post {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getAuthorId() {

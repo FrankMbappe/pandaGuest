@@ -1,30 +1,48 @@
 package panda.guest.ui.controllers;
 
+import javafx.beans.InvalidationListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.geometry.Orientation;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import org.jetbrains.annotations.NotNull;
+import panda.guest.remote.Stub;
+import panda.guest.ui.controllers.data.Dummy;
+import panda.guest.ui.models.PostVBox;
+import panda.guest.ui.models.UIModel;
+import panda.guest.ui.models.filtering.PostFilterByFileExt;
+import panda.guest.ui.models.filtering.PostFilterByTags;
+import panda.guest.ui.models.sorting.PostSorting;
+import panda.guest.ui.scenes.AddPostScene;
+import panda.guest.ui.scenes.LoginScene;
 import panda.host.models.Post;
+import panda.host.utils.Current;
 import panda.host.utils.Panda;
 
-import java.io.File;
-import java.sql.Timestamp;
-import java.time.Instant;
+//import static panda.host.server.SyncChannelImpl.postObservableList;
+import java.util.ArrayList;
+import static panda.guest.ui.models.UIModel.showErrorAlert;
+import static panda.guest.ui.models.UIModel.showInfoAlert;
+import static panda.host.utils.Panda.*;
 
 public class HomeController {
     public Circle circ_serverStatus;
     public Button btn_postAdd;
     public Button btn_logOut;
     public Button btn_refresh;
-    public ComboBox cb_sortBy;
-    public ComboBox cb_filterFileType;
-    public ComboBox cb_filterSchool;
-    public ComboBox cb_filterSpeciality;
-    public ListView<VBox> list_postFlow;
+    public TextField txt_search;
+    public ComboBox<PostSorting> cb_sortBy;
+    public ComboBox<PostFilterByFileExt> cb_filterFileExt;
+    public ListView<PostVBox> list_postFlow;
+    public RadioButton radio_orderAsc;
+    public RadioButton radio_orderDesc;
 
     // POST - Fields
     Label lbPostUserName;
@@ -32,77 +50,203 @@ public class HomeController {
     Label lbPostTags;
     Label lbPostLbLastUpdate;
     Label lbPostValLastUpdate;
+    Label lbPostMessage;
     Label lbPostFileName;
     Label lbPostFileInfo;
     Button btnDownload;
 
 
-    public void initialize(){
-        File file = new File("C:/Users/hp/Documents/ChiffrementRSA.xlsx");
-        Post post = new Post(
-                "mabel.parrot18@myiuc.com",
-                "Hello there, this is the seventh test.",
-                "btech;swe;it",
-                file
-        );
-        post.setLastUpdate(Timestamp.from(Instant.now()));
-        File file2 = new File("C:/Users/hp/Documents/PRÉSENTATION RAPPORT OVER SOFT SOLUTION.pptx");
-        Post post2 = new Post(
-                "mabel.parrot18@myiuc.com",
-                "Hello there, this is the seventh test.",
-                "btech;swe;it",
-                file2
-        );
-        post2.setLastUpdate(Timestamp.from(Instant.now()));
-        File file3 = new File("C:/Users/hp/Documents/RAPPORT DE STAGE OVERSOFT SOLUTION.pdf");
-        Post post3 = new Post(
-                "mabel.parrot18@myiuc.com",
-                "Hello there, this is the seventh test.",
-                "btech;swe;it",
-                file3
-        );
-        post3.setLastUpdate(Timestamp.from(Instant.now()));
-        File file4 = new File("C:/Users/hp/Documents/RAPPORT DE STAGE OVERSOFT SOLUTION.docx");
-        Post post4 = new Post(
-                "mabel.parrot18@myiuc.com",
-                "Hello there, this is the seventh test.",
-                "btech;swe;it",
-                file4
-        );
-        post4.setLastUpdate(Timestamp.from(Instant.now()));
+    public void initialize() {
 
-        initializePostLayout();
+        // @TEST with dummy data
+        Current.postList = Dummy.posts;
 
-        list_postFlow.getItems().add(postToUI(post));
-        list_postFlow.getItems().add(postToUI(post2));
-        list_postFlow.getItems().add(postToUI(post3));
-        list_postFlow.getItems().add(postToUI(post4));
+        // Initializing the current post list
+        // Current.postList.setAll(new Stub(true).getPosts());
+
+        // Hiding nodes depending on the user privileges
+        applyPrivileges();
+
+        // Initializing my combo boxes
+        initComboBoxes();
+
+        // Initializing my post layout
+        initPostsLayout();
+
+        // Automatically updating the server status
+        updateContentInRealtime();
+
     }
-    public void addPost(ActionEvent actionEvent) {
 
+    // @REALTIME
+    private void updateContentInRealtime() {
+        // Updating the server status in realtime
+        setServerStatusInRealtime();
+        // Updating the post list in realtime
+        setPostListInRealtime();
+    }
+
+    private void setPostListInRealtime() {
+        Current.postList.addListener((InvalidationListener) event -> {
+            // Notifying the user that an update has been done
+            notifyPostListHasBeenUpdated();
+
+            // Displaying the updated post list
+            fillPostLayout(Current.postList);
+        });
+    }
+
+    public void setServerStatusInRealtime(){
+        Current.serverIsRunning.addListener(event -> {
+            setServerStatus(Current.serverIsRunning.getValue());
+            System.out.println("[HomeCtrl] | Server is running: " + Current.serverIsRunning.getValue());
+        });
+    }
+
+
+    // ACTION EVENTS
+    public void addPost(ActionEvent actionEvent) {
+        try {
+            switchScene(btn_logOut.getScene(), new AddPostScene());
+
+        } catch (Exception e){ e.printStackTrace(); }
     }
 
     public void logOut(ActionEvent actionEvent) {
+        if (Current.auth != null  && Current.auth.isValid()) {
+            boolean userHasLoggedOut = new Stub(false).logUserOut(Current.auth.getUser().getUsername());
+            if (userHasLoggedOut){
+                try {
+                    switchScene(btn_logOut.getScene(), new LoginScene());
 
+                } catch (Exception e){ e.printStackTrace(); }
+
+            } else {
+                showErrorAlert("Sorry, an error occurred while logging out.\nPlease try again.");
+            }
+        }
+        else {
+            Current.auth = null;
+            try {
+                switchScene(btn_logOut.getScene(), new LoginScene());
+
+            } catch (Exception e){ e.printStackTrace(); }
+        }
     }
 
     public void refresh(ActionEvent actionEvent) {
-
+        // I simply fill the post layout with the post list
+        fillPostLayout(Current.postList);
     }
 
-    void initializePostLayout(){
+    public void onCbSortByItemSelected(ActionEvent actionEvent) {
+        // I get the sorting type depending on which one has been selected
+        PostSorting sortingType = cb_sortBy.getValue();
+
+        // Then I sort the displayed posts
+        var displayedPosts = getDisplayedPosts();
+        if(sortingType != null) sortingType.sort(displayedPosts);
+
+        // And finally, I display the result in my post layout
+        fillPostLayout(displayedPosts);
+    }
+
+    public void onCbFilterFileExtSelected(ActionEvent actionEvent) {
+        // I reset the sorting ComboBox to no item selected
+        cb_sortBy.getSelectionModel().clearSelection();
+
+        // This method will filter the post list depending on the selected filter
+        fillPostLayout(Current.postList);
+    }
+
+    public void onTxtSearchTypingIn(KeyEvent actionEvent) {
+        String textTyped = txt_search.textProperty().get();
+
+        if(txtsAreNotEmpty(txt_search)) fillPostLayout(new PostFilterByTags(textTyped).filter(Current.postList));
+
+        else fillPostLayout(Current.postList);
+    }
+
+    public void orderAscSelected(ActionEvent event) {
+        // Inverting
+        radio_orderDesc.setSelected(! radio_orderAsc.isSelected());
+        // TODO: ASC-DESC Sorting (Inverting the list each time I check one the radio button)
+        onCbSortByItemSelected(event);
+    }
+
+    public void orderDescSelected(ActionEvent event) {
+        // Inverting
+        radio_orderAsc.setSelected(! radio_orderDesc.isSelected());
+        onCbSortByItemSelected(event);
+    }
+
+
+    // LOCAL METHODS
+    void initComboBoxes() {
+        cb_sortBy.getItems().setAll(UIModel.getPostSortingTypes());
+        cb_filterFileExt.getItems().setAll(UIModel.getPostFilteringExtensionTypes());
+        cb_filterFileExt.getSelectionModel().select(0);
+        radio_orderAsc.setSelected(true);
+    }
+
+    void initPostsLayout() {
+        // To make the post flow container grow when resizing the window
+        VBox.setVgrow(list_postFlow, Priority.ALWAYS);
+
+        // Then I instantiate the controls
         lbPostUserName = new Label();
         lbPostUserRole = new Label();
         lbPostTags = new Label();
         lbPostLbLastUpdate = new Label();
         lbPostValLastUpdate = new Label();
+        lbPostMessage = new Label();
         lbPostFileName = new Label();
         lbPostFileInfo = new Label();
         btnDownload = new Button();
+
+        // Initializing the post layout
+        fillPostLayout(Current.postList);
+
     }
 
-    VBox postToUI(@NotNull Post post){
-        VBox vBoxPost = new VBox();
+    void applyPrivileges() {
+        if (Current.auth == null || !Current.auth.isValid()){
+            Panda.setNodeVisibility(false, btn_postAdd);
+        }
+    }
+
+    void setServerStatus(boolean serverIsRunning) {
+        if (serverIsRunning) circ_serverStatus.getStyleClass().setAll("circ-server-status", "connected");
+
+        else circ_serverStatus.getStyleClass().setAll("circ-server-status");
+    }
+
+    void fillPostLayout(ObservableList<Post> posts) {
+        // Removing everything inside
+        list_postFlow.getItems().clear();
+
+        var postsToDisplay = posts;
+
+        // Filtering using the combo box selected filter
+        if (cb_filterFileExt.getValue() != null) postsToDisplay = cb_filterFileExt.getValue().filter(postsToDisplay);
+
+        // Filtering using the search box
+        String textSearched = txt_search.textProperty().get();
+        if (txtsAreNotEmpty(txt_search)) postsToDisplay = new PostFilterByTags(textSearched).filter(postsToDisplay);
+
+        // Then I add the filtered posts
+        for (var post: postsToDisplay){
+            list_postFlow.getItems().add(postToUI(post));
+        }
+    }
+
+    void notifyPostListHasBeenUpdated() {
+        // TODO: Display something that indicates that the list has been updated
+        System.out.println("[HomeCtrl] | The posts list has been updated.");
+    }
+
+    PostVBox postToUI(@NotNull Post post) {
+        PostVBox vBoxPost = new PostVBox(post);
         vBoxPost.getStyleClass().add("vbox-post");
             // POST - Title
             HBox hBoxPostTitle = new HBox();
@@ -137,6 +281,10 @@ public class HomeController {
                         lbPostValLastUpdate = new Label(Panda.getFormattedDate(post.getLastUpdate().toLocalDateTime())); // Post.LastUpdate
                         lbPostValLastUpdate.getStyleClass().add("lb-post-val-last-update");
 
+            // POST - Message
+            lbPostMessage = new Label(post.getMessage());
+            lbPostMessage.getStyleClass().add("lb-post-message");
+
             // POST - File
             HBox hBoxPostFile = new HBox();
             hBoxPostFile.getStyleClass().addAll("hbox-post-file", post.getFileExt());
@@ -164,6 +312,21 @@ public class HomeController {
                 btnDownload = new Button("Download");
                 btnDownload.getStyleClass().add("btn-post-file-download"); // Download()
 
+                btnDownload.setOnAction(event -> {
+                    System.out.println(String.format("[HomeCtrl, aPost] | User requested to download '%s' from '%s'.",
+                            post.getCompleteFileName(), post.getAuthorId()));
+
+                    // Downloading the file content
+                    byte[] fileContent = new Stub(true).downloadPostFile(post);
+
+                    // Saving the file
+                    boolean theFileHasBeenSaved = saveFileDialog(list_postFlow, post.getFileName(), fileContent, post.getFileExt());
+                    //boolean theFileHasBeenSaved = saveFileDialog(list_postFlow, post.getFileName(), post.getFileToBytes(), post.getFileExt());
+
+                    if (theFileHasBeenSaved) showInfoAlert("Your file has been downloaded and successfully saved");
+
+                });
+
         // Putting child nodes into corresponding parent nodes (Starting from the bottom and adding gradually)
                         vBoxPostFileName.getChildren().addAll(lbPostFileName, lbPostFileInfo);
                         hBoxPostFileInfo.getChildren().addAll(stkPostFilePhoto, vBoxPostFileName);
@@ -177,8 +340,22 @@ public class HomeController {
 
             hBoxPostTitle.getChildren().addAll(hBoxPostUserName, stkGrowAlways1, hBoxPostInfo);
 
-        vBoxPost.getChildren().addAll(hBoxPostTitle, hBoxPostFile);
+        // The post file vbox is only included if the post contains a file
+        if (post.containsAFile())
+            vBoxPost.getChildren().addAll(hBoxPostTitle, new Separator(Orientation.HORIZONTAL), lbPostMessage, hBoxPostFile);
+        else
+            vBoxPost.getChildren().addAll(hBoxPostTitle, new Separator(Orientation.HORIZONTAL), lbPostMessage);
 
         return vBoxPost;
+    }
+
+    ObservableList<Post> getDisplayedPosts(){
+        ArrayList<Post> displayedPosts = new ArrayList<>();
+
+        for (PostVBox postVBox : list_postFlow.getItems()){
+            displayedPosts.add(postVBox.getPost());
+        }
+
+        return FXCollections.observableList(displayedPosts);
     }
 }

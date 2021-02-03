@@ -46,11 +46,6 @@
     -fx-background-size: contain;
     -fx-background-repeat: no-repeat;
 }
-.server-logo{
-    -fx-background-image: url("../images/server_logo.png");
-    -fx-background-size: contain;
-    -fx-background-repeat: no-repeat;
-}
 .info-logo{
     -fx-background-image: url("../images/info_logo.png");
     -fx-background-size: contain;
@@ -58,11 +53,6 @@
 }
 .icon-ok{
     -fx-background-image: url("../images/icon_ok.png");
-    -fx-background-size: contain;
-    -fx-background-repeat: no-repeat;
-}
-.db-logo{
-    -fx-background-image: url("../images/db_logo.png");
     -fx-background-size: contain;
     -fx-background-repeat: no-repeat;
 }
@@ -88,6 +78,11 @@
 }
 .icon-logout{
     -fx-background-image: url("../images/icon_logout.png");
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+}
+.icon-back{
+    -fx-background-image: url("../images/icon_back.png");
     -fx-background-size: contain;
     -fx-background-repeat: no-repeat;
 }
@@ -154,7 +149,7 @@
         -fx-padding: 6 7 6 7;
         -fx-border-radius: 5;
         -fx-min-width: 260;
-        -fx-max-width: 260;
+        -fx-pref-width: 260;
     }
         .input-box-text-field:focused {
             -fx-border-width: 5;
@@ -168,6 +163,7 @@
         -fx-text-fill: #767676;
         -fx-font-size: 10;
         -fx-padding: 5 0 0 0;
+        -fx-wrap-text: true;
     }
         .text-danger {
             -fx-text-fill: red;
@@ -244,3 +240,108 @@
 .combo-box{
 
 }
+
+/* POST */
+/* POST - File */
+.hbox-post-file{
+    -fx-padding: 15 20 15 20;
+    -fx-alignment: center;
+    -fx-background-color: #232222;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+/* PDF Files */
+.hbox-post-file.pdf{
+    -fx-background-color: #BE5C5C;
+}
+/* WORD Files */
+.hbox-post-file.docx{
+    -fx-background-color: #508EFC;
+}
+/* EXCEL Files */
+.hbox-post-file.xlsx{
+    -fx-background-color: #107C41;
+}
+/* POWERPOINT Files */
+.hbox-post-file.pptx{
+    -fx-background-color: #FA723D;
+}
+/* TEXT Files */
+.hbox-post-file.txt{
+    -fx-background-color: #79879A;
+}
+/* ARCHIVE Files */
+.hbox-post-file.rar, .hbox-post-file.zip, .hbox-post-file.iso{
+    -fx-background-color: #8E1AAD;
+}
+/* IMAGE Files */
+.hbox-post-file.png, .hbox-post-file.jpg, .hbox-post-file.jpeg,
+.hbox-post-file.gif, .hbox-post-file.bmp {
+    -fx-background-color: #267D68;
+}
+/* MUSIC Files */
+.hbox-post-file.mp3, .hbox-post-file.wav, .hbox-post-file.flac,
+.hbox-post-file.m4a {
+    -fx-background-color: #B8810B;
+}
+/* VIDEO Files */
+.hbox-post-file.mp4, .hbox-post-file.avi, .hbox-post-file.wmv,
+.hbox-post-file.mkv {
+    -fx-background-color: #2F1C90;
+}
+
+
+.hbox-post-file-info{
+    -fx-spacing: 15;
+    -fx-alignment: center;
+}
+.stk-post-file-photo{
+    -fx-pref-height: 58;
+    -fx-pref-width: 54;
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+}
+/* Default Files */
+.stk-post-file-photo{
+    -fx-background-image: url("../images/file_all.png");
+}
+/* PDF Files */
+.stk-post-file-photo.pdf{
+    -fx-background-image: url("../images/file_pdf.png");
+}
+/* WORD Files */
+.stk-post-file-photo.docx{
+    -fx-background-image: url("../images/file_docx.png");
+}
+/* EXCEL Files */
+.stk-post-file-photo.xlsx{
+    -fx-background-image: url("../images/file_xlsx.png");
+}
+/* POWERPOINT Files */
+.stk-post-file-photo.pptx{
+    -fx-background-image: url("../images/file_pptx.png");
+}
+/* TEXT Files */
+.stk-post-file-photo.txt{
+    -fx-background-image: url("../images/file_text.png");
+}
+/* ARCHIVE Files */
+.stk-post-file-photo.rar, .stk-post-file-photo.zip, .stk-post-file-photo.iso {
+    -fx-background-image: url("../images/file_archive.png");
+}
+/* IMAGE Files */
+.stk-post-file-photo.png, .stk-post-file-photo.jpg, .stk-post-file-photo.jpeg,
+.stk-post-file-photo.gif, .stk-post-file-photo.bmp {
+    -fx-background-image: url("../images/file_image.png");
+}
+/* MUSIC Files */
+.stk-post-file-photo.mp3, .stk-post-file-photo.wav, .stk-post-file-photo.flac,
+.stk-post-file-photo.m4a {
+    -fx-background-image: url("../images/file_music.png");
+}
+/* VIDEO Files */
+.stk-post-file-photo.mp4, .stk-post-file-photo.avi, .stk-post-file-photo.wmv,
+.stk-post-file-photo.mkv {
+    -fx-background-image: url("../images/file_video.png");
+}
+

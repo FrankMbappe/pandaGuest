@@ -28,7 +28,8 @@ public class Configs {
     }
 
     /**
-     * Saves an authentication into the configurations' file
+     * Saves an authentication into the configurations' file.
+     * Update the current authentication using the parameter.
      * @param auth The Authentication object
      * @return A boolean: Operation succeeded
      */
@@ -38,6 +39,7 @@ public class Configs {
             Current.auth = auth;
             System.out.println("[Configs, saveAuth()] | Configurations has been saved.");
             return true;
+
         } catch (IOException e) {
             e.printStackTrace();
             return false;

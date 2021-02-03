@@ -4,36 +4,25 @@ import panda.host.utils.Panda;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 public class Authentication {
-    private int code; // 0 = Credentials don't match any user, 1 = User found
+    public enum Status { REVOKED, GRANTED }
+    public enum Type { NORMAL, GUEST }
+
+    private int statusCode; // 0 = Credentials don't match any user, 1 = User found
     private User user;
     private Timestamp date;
-    private boolean valid;
-    private String codeMeaning;
 
-    public Authentication(){
-    }
+    public Authentication(){}
 
-    public Authentication(int code) {
-        this.code = code;
-        this.user = new User(Panda.DEFAULT_GUEST_NAME);
+    public Authentication(Status status, Type type) {
+        this.statusCode = getStatusCode(status);
+        if (type == Type.GUEST) this.user = new User(Panda.DEFAULT_USER_GUEST_SESSION_NAME);
         this.date = Timestamp.from(Instant.now());
     }
 
-    public Authentication(boolean asGuest) {
-        if(asGuest){
-            this.code = 2;
-        } else {
-            this.code = 0;
-        }
-        this.user = new User(Panda.DEFAULT_GUEST_NAME);
-        this.date = Timestamp.from(Instant.now());
-    }
-
-    public Authentication(int code, User user, Timestamp date) {
-        this.code = code;
+    public Authentication(Status status, User user, Timestamp date) {
+        this.statusCode = getStatusCode(status);
         this.user = user;
         this.date = date;
     }
@@ -42,43 +31,55 @@ public class Authentication {
     public String toString() {
         if (user != null) {
             return "Authentication {" +
-                    " code = " + code +
+                    " status = " + getStatus() +
+                    ", type = " + getType() +
                     ", user = " + user.getUsername() +
                     ", date = " + date.toString() +
+                    ", valid = " + isValid() +
                     " }";
         } else {
-            return getCodeMeaning();
+            return "Authentication {" +
+                    " status = " + getStatus() +
+                    ", type = " + getType() +
+                    ", valid = " + isValid() +
+                    " }";
         }
     }
 
-    public String getCodeMeaning() {
-        switch (code) {
-            case 0 -> {
-                return "Credentials don't match any user";
-            }
-            case 1 -> {
-                return "User found";
-            }
-            case 2 -> {
-                return "Guest session";
-            }
-            default -> {
-                return "Unknown code";
-            }
+    public Status getStatus() {
+        if (statusCode == 1) {
+            return Status.GRANTED;
+        } else {
+            return Status.REVOKED;
         }
+    }
+
+    public Type getType(){
+        if (user.getUsername().equalsIgnoreCase(Panda.DEFAULT_USER_GUEST_SESSION_NAME)){
+            return Type.GUEST;
+        }
+        else return Type.NORMAL;
     }
 
     public boolean isValid(){
         // An authentication is only valid when its code is equal to 1 (Guest sessions are not considered as valid)
-        return code == 1;
+        return getType() == Type.NORMAL && getStatus() == Status.GRANTED;
     }
 
-    public int getCode() {
-        return code;
+    public int getStatusCode() {
+        return statusCode;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public int getStatusCode(Status status){
+        if (status == Status.GRANTED) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
     }
 
     public User getUser() {

@@ -1,0 +1,99 @@
+/* -----  CONTAINERS  ------ */
+
+.root-pane{
+    -fx-spacing: 15;
+    -fx-pref-height: 500;
+    -fx-alignment: top-left;
+}
+.vbox-add-file {
+    -fx-padding: 35 0 35 0;
+    -fx-alignment: center;
+    -fx-spacing: 9;
+    -fx-border-style: dashed;
+    -fx-border-color: #D6D1D1;
+    -fx-border-width: 3;
+    -fx-border-radius: 9;
+}
+.vbox-browse-file {
+    -fx-alignment: center;
+    -fx-spacing: 9;
+}
+.vbox-edit-file {
+    -fx-alignment: center;
+    -fx-spacing: 34;
+}
+
+/* FLOWS */
+.flow{
+    -fx-pref-width: 850;
+    -fx-spacing: 9;
+}
+.inputFlow {
+    -fx-spacing: 18;
+    -fx-max-width: 400;
+}
+
+
+
+
+/* -----  COMPONENTS  ----- */
+
+/* BUTTONS */
+.icon{
+    -fx-pref-width: 20;
+    -fx-border-radius: 10;
+    -fx-background-color: transparent;
+}
+    .icon:hover{
+        -fx-effect: dropshadow(three-pass-box, rgba(0, 110, 254, 0.5), 10, 0, 0, 0);
+    }
+.image-button{
+    -fx-padding: 0;
+    -fx-effect: dropshadow(three-pass-box, white, 10, 0, 0, 0);
+}
+
+
+
+/* LABELS */
+
+.title-text {
+    -fx-font-family: "SF Pro Text Semibold";
+    -fx-font-size: 16;
+}
+.lb-description {
+    -fx-font-family: "SF Pro Text Regular";
+    -fx-font-size: 13;
+    -fx-wrap-text: true;
+}
+.lb-post-file-name{
+    -fx-font-family: "SF Pro Text Bold";
+    -fx-font-size: 18;
+}
+.lb-post-file-info{
+    -fx-font-family: "SF Pro Text Medium";
+    -fx-font-size: 13;
+    -fx-text-fill: #7E7E7E;
+    -fx-padding: 0 0 9 0;
+}
+.lb-attach-file{
+    -fx-font-family: "SF Pro Text Bold";
+    -fx-font-size: 16;
+}
+
+
+
+/* INPUTS */
+
+.message-box {
+    -fx-wrap-text: true;
+    -fx-pref-height: 80;
+}
+
+
+
+/* IMAGES */
+
+.stk-post-file-photo{
+    -fx-pref-width: 72;
+    -fx-pref-height: 83;
+}

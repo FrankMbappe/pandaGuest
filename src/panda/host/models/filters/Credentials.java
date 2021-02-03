@@ -17,6 +17,14 @@ public class Credentials implements Filter {
         this.password = user.getPassword();
     }
 
+    @Override
+    public String toString() {
+        return "Credentials{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
+
     public String getUsername() {
         return username;
     }

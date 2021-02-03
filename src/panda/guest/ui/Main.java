@@ -7,35 +7,46 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import panda.guest.config.Configs;
-import panda.guest.ui.scenes.HomeScene;
-import panda.guest.ui.scenes.LoginScene;
+import panda.guest.remote.Stub;
+import panda.guest.ui.scenes.AddPostScene;
 import panda.host.utils.Current;
 import panda.host.utils.Panda;
-
-import java.util.TimerTask;
-
-import static panda.host.utils.Panda.PATH_TO_APP_ICON;
 
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
-        // If a valid auth exists in the configs' file
-//        if(Configs.fileIsValid()){
-//            // The app goes directly to Home using it
-//            Current.auth = Configs.getSavedAuth();
-//            primaryStage.setScene(new HomeScene().get());
-//
-//        } else {
-//            // Else, the app asks the user to login
-//            primaryStage.setScene(new LoginScene().get());
-//        }
-        Current.auth = Configs.getSavedAuth();
-        primaryStage.setScene(new HomeScene().get());
+    public void start(Stage primaryStage){
+        try{
+            // SERVER@REGISTER
+            Current.serverIsRunning.addListener(event -> {
+                if (Current.serverIsRunning.getValue()){
+                    new Stub(true).register();
+                }
+            });
 
-        primaryStage.getIcons().add(new Image(Panda.PATH_TO_APP_ICON));
-        primaryStage.setTitle(Panda.APP_NAME);
-        primaryStage.show();
+            // If a valid auth exists in the configs' file
+//            if(Configs.fileIsValid()){
+//                // The app goes directly to Home using it
+//                Current.auth = Configs.getSavedAuth();
+//                primaryStage.setScene(new HomeScene().get());
+//
+//            } else {
+//                // Else, the app asks the user to login
+//                primaryStage.setScene(new LoginScene().get());
+//            }
+
+            // @TEST
+
+            Current.auth = Configs.getSavedAuth();
+            primaryStage.setScene(new AddPostScene().get());
+
+            primaryStage.getIcons().add(new Image(Panda.PATH_TO_APP_ICON));
+            primaryStage.setTitle(Panda.APP_NAME);
+            primaryStage.show();
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -44,7 +55,7 @@ public class Main extends Application {
     }
 
     @Override
-    public void stop() throws Exception {
+    public void stop() {
         Panda.exit();
     }
 

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.shape.Circle?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      styleClass="root-pane"
+      stylesheets="@../resources/css/common.css, @../resources/css/add_post.css"
+      fx:controller="panda.guest.ui.controllers.AddPostController">
+
+    <HBox styleClass="title-bar">
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+
+            <Button fx:id="btn_back" styleClass="image-button, icon-back, icon" onAction="#backHome" />
+
+            <Label styleClass="title-text" text="Adding a post"/>
+
+        </HBox>
+
+        <StackPane HBox.hgrow="ALWAYS"/>
+
+        <Circle fx:id="circ_serverStatus" styleClass="circ-server-status"/>
+
+    </HBox>
+
+    <VBox spacing="15" alignment="CENTER">
+
+        <VBox styleClass="flow">
+
+            <!-- TITLE -->
+            <Label styleClass="big-title" text="Post something new"/>
+
+            <!-- DESCRIPTION -->
+            <Label styleClass="lb-description" text="Panda enables you to post a message and/or a file in the news feed, that can be seen by every other Panda user connected to your network. Every action in Panda is performed in realtime, so every update is directly sent to the network."/>
+
+            <!-- FILE -->
+            <VBox styleClass="vbox-add-file">
+
+                <HBox alignment="CENTER">
+
+                    <!-- NO FILE ADDED -->
+                    <VBox fx:id="vbox_BrowseFile" styleClass="vbox-browse-file" HBox.hgrow="NEVER">
+                        <Label styleClass="lb-attach-file" text="Attach a file"/>
+                        <Label styleClass="lb-description" text="Add a file to your post"/>
+                        <Button fx:id="btn_Browse" text="Browse" onAction="#browseFile"/>
+                    </VBox>
+
+                    <!-- FILE HAS BEEN ADDED -->
+                    <HBox fx:id="hbox_SelectedFile" styleClass="vbox-edit-file" HBox.hgrow="NEVER">
+
+                        <!-- FILE PHOTO -->
+                        <StackPane fx:id="stk_filePhoto" styleClass="stk-post-file-photo"/>
+
+                        <!-- FILE DESCRIPTION -->
+                        <VBox styleClass="vbox-post-file-name" spacing="2">
+                            <Label fx:id="lb_fileName" styleClass="lb-post-file-name" text="Damso - 04 Δ. Dieu ne ment jamais" />
+                            <Label fx:id="lb_fileInfo" styleClass="lb-post-file-info" text="MP3 File | 9.05 MB"/>
+
+                            <Button fx:id="btn_EditFile" text="Browse" onAction="#browseFile"/>
+                        </VBox>
+
+                    </HBox>
+
+                </HBox>
+
+            </VBox>
+
+        </VBox>
+
+        <VBox styleClass="inputFlow">
+
+            <VBox styleClass="input-box-text">
+                <Label styleClass="input-box-text-label" text="Message" />
+                <TextArea fx:id="txt_message" promptText="Type your message..." styleClass="input-box-text-field, message-box" />
+            </VBox>
+
+            <VBox styleClass="input-box-text">
+                <Label styleClass="input-box-text-label" text="Tags" />
+                <TextField fx:id="txt_tags" styleClass="input-box-text-field" promptText="Separate your values using a semicolon (;) e.g tag1; tag2..." />
+                <Label styleClass="input-box-text-hint" text="Panda uses the tags to index your post. They are embedded with it and you can type one of them to retrieve your post from the news feed." />
+            </VBox>
+
+            <HBox styleClass="submit-box">
+                <Button fx:id="btn_validate" onAction="#validate" styleClass="submit-button" text="Validate" />
+                <Button fx:id="btn_cancel" onAction="#cancel" text="Cancel" />
+            </HBox>
+
+        </VBox>
+
+    </VBox>
+
+</VBox>

@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -14,17 +11,21 @@
       fx:controller="panda.guest.ui.controllers.HomeController">
 
     <HBox styleClass="title-bar">
-        <Circle fx:id="circ_serverStatus" styleClass="circ-server-status" HBox.hgrow="NEVER"/>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <StackPane styleClass="host-logo"/>
+            <Separator orientation="VERTICAL"/>
+            <Circle fx:id="circ_serverStatus" styleClass="circ-server-status"/>
+        </HBox>
         <StackPane HBox.hgrow="ALWAYS"/>
         <HBox styleClass="search-box" HBox.hgrow="NEVER">
             <Button fx:id="btn_postAdd" HBox.hgrow="NEVER" styleClass="image-button, icon-add, icon" onAction="#addPost" />
             <Button fx:id="btn_logOut" styleClass="image-button, icon-logout, icon" onAction="#logOut" />
             <Button fx:id="btn_refresh" styleClass="image-button, icon-refresh, icon" onAction="#refresh" />
-            <TextField styleClass="input-box-text-field" promptText="Search..."/>
+            <TextField fx:id="txt_search" styleClass="input-box-text-field" promptText="Search tags (e.g. swe, it)..." onKeyReleased="#onTxtSearchTypingIn"/>
         </HBox>
     </HBox>
 
-    <VBox styleClass="flow">
+    <VBox styleClass="flow" VBox.vgrow="ALWAYS">
 
         <!-- TITLE -->
         <Label styleClass="big-title" text="Hello, there's the news"/>
@@ -33,34 +34,29 @@
         <!-- FILTERS -->
         <HBox styleClass="filters-box">
 
-            <!-- Sort by -->
-            <HBox styleClass="filter-selector">
-                <Label styleClass="lb-filter-name" text="Sort by:"/>
-                <ComboBox fx:id="cb_sortBy"/>
-            </HBox>
-
             <!-- Display only -->
             <HBox styleClass="filter-selector">
                 <Label styleClass="lb-filter-name" text="Display only:"/>
-                <ComboBox fx:id="cb_filterFileType"/>
+                <ComboBox fx:id="cb_filterFileExt" onAction="#onCbFilterFileExtSelected"/>
             </HBox>
 
-            <!-- School -->
+            <!-- Sort by -->
             <HBox styleClass="filter-selector">
-                <Label styleClass="lb-filter-name" text="School:"/>
-                <ComboBox fx:id="cb_filterSchool"/>
+                <Label styleClass="lb-filter-name" text="Sort by:"/>
+                <ComboBox fx:id="cb_sortBy" onAction="#onCbSortByItemSelected"/>
             </HBox>
 
-            <!-- Speciality -->
+            <!-- Order by -->
             <HBox styleClass="filter-selector">
-                <Label styleClass="lb-filter-name" text="Speciality:"/>
-                <ComboBox fx:id="cb_filterSpeciality"/>
+                <RadioButton fx:id="radio_orderAsc" text="Ascending" onAction="#orderAscSelected"/>
+                <RadioButton fx:id="radio_orderDesc" text="Descending" onAction="#orderDescSelected"/>
             </HBox>
+
         </HBox>
 
 
         <!-- POST FLOW -->
-        <ListView fx:id="list_postFlow" styleClass="list-post-flow">
+        <ListView fx:id="list_postFlow" styleClass="list-post-flow" VBox.vgrow="ALWAYS">
             <!-- POST -->
 <!--            <VBox styleClass="vbox-post">-->
 
@@ -94,10 +90,15 @@
 <!--                </HBox>-->
 
 <!--                &lt;!&ndash; POST - File &ndash;&gt;-->
-<!--                <HBox styleClass="hbox-post-file">-->
+<!--                <HBox>-->
+<!--                    <Label HBox.hgrow="ALWAYS" wrapText="true" styleClass="lb-post-message" text="Wrap text Wrap text Wrap text Wrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap textWrap text"/>-->
+<!--                </HBox>-->
+
+<!--                &lt;!&ndash; POST - File &ndash;&gt;-->
+<!--                <HBox styleClass="hbox-post-file, pdf">-->
 <!--                    &lt;!&ndash; POST - File - Info &ndash;&gt;-->
 <!--                    <HBox styleClass="hbox-post-file-info">-->
-<!--                        <StackPane styleClass="stk-post-file-photo"/>-->
+<!--                        <StackPane styleClass="stk-post-file-photo, pdf"/>-->
 <!--                        <VBox styleClass="vbox-post-file-name">-->
 <!--                            <Label styleClass="lb-post-file-name" text="BTECH SWE Time table.pdf" />-->
 <!--                            <Label styleClass="lb-post-file-info" text="PDF File | 785.6 KB"/>-->
@@ -109,6 +110,7 @@
 
 <!--                    &lt;!&ndash; POST - File - Download &ndash;&gt;-->
 <!--                    <Button styleClass="btn-post-file-download" text="Download"/>-->
+
 <!--                </HBox>-->
 
 <!--            </VBox>-->

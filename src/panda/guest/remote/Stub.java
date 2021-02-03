@@ -7,6 +7,7 @@ import panda.host.models.Post;
 import panda.host.models.filters.Credentials;
 import panda.host.models.filters.PostFilter;
 import panda.host.server.PandaRemote;
+import panda.host.utils.Current;
 
 import java.lang.reflect.Type;
 import java.rmi.NotBoundException;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import static panda.host.utils.Panda.*;
 
 public class Stub {
-    PandaRemote stub;
+    PandaRemote remote;
 
     public Stub(boolean useLog){
         try {
@@ -26,34 +27,57 @@ public class Stub {
             if (useLog) System.out.println(String.format("[Stub] | Accessing the remote service at the address %s.\r", DEFAULT_REMOTE_URL));
 
             Registry registry = LocateRegistry.getRegistry(DEFAULT_PORT);
-            stub = (PandaRemote) registry.lookup(DEFAULT_REMOTE_URL);
+            remote = (PandaRemote) registry.lookup(DEFAULT_REMOTE_URL);
+
+            //remote.register(Current.ID, new Gson().toJson(new SyncChannelImpl()));
 
             if (useLog) System.out.println("[Stub] | Successfully connected to the server.");
 
         } catch (RemoteException | NotBoundException e){
             if (useLog) System.err.println("[Stub] | Cannot access the server..\r");
+            e.printStackTrace();
         }
     }
 
     public PandaRemote get(){
-        return stub;
+        return remote;
     }
 
-    public ArrayList<Post> getPosts(PostFilter filter){
-        try{
-            // Getting request format
-            String postRequestFormat = PANDA_ENCODING_PATTERNS.get(PandaOperation.PANDAOP_REQUEST_GET_POSTS);
+    public synchronized void register(){
+        System.out.println(String.format("[Stub, register()] | Registering server with id: '%s'.", Current.ID));
+        try {
+            remote.register(Current.ID, new Gson().toJson(new Stub(true)));
 
-            // Creating the panda code to request the posts list
-            String postRequest = String.format(postRequestFormat, filter.isAll(), filter.getFileType(), filter.getSchoolClassId());
-            System.out.println(String.format("[Stub] | Requesting posts using the panda code: '%s'.", postRequest));
+        } catch (RemoteException e) {
+            System.out.println(String.format("[Stub, register()] | Failed to register. Id: '%s'.", Current.ID));
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void unregister(){
+        System.out.println(String.format("[Stub, unregister()] | Server unregistering with id: '%s'.", Current.ID));
+        try {
+            remote.unregister(Current.ID);
+
+        } catch (RemoteException e) {
+            System.out.println(String.format("[Stub, unregister()] | Failed to unregister. Id: '%s'.", Current.ID));
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized ArrayList<Post> getPosts(PostFilter filter){
+        try{
+            if (filter == null) filter = new PostFilter(true, "", "");
+
+            System.out.println(String.format("[Stub] | Requesting posts using filters: '%s'.", filter.toString()));
 
             // Deserializing the post list using Gson
-            String postListToJson = stub.getPosts(postRequest);
+            String postListToJson = remote.getPosts(new Gson().toJson(filter));
 
             if(postListToJson != null){
                 // Creating an object containing the ArrayList<Post>() type
                 Type postListType = new TypeToken<ArrayList<Post>>() {}.getType();
+
                 // Passing that type to Gson to deserialize the data
                 ArrayList<Post> retrievedPosts = new Gson().fromJson(postListToJson, postListType);
 
@@ -63,8 +87,8 @@ public class Stub {
             }
 
         } catch(NullPointerException nullPointerException){
-            System.out.println("[Stub] | Error: The data retrieved was null.");
-//            System.exit(-1);
+            System.err.println("[Stub] | Error: The data retrieved was null.");
+            // System.exit(-1);
         }
         catch (RemoteException e){
             e.printStackTrace();
@@ -72,19 +96,28 @@ public class Stub {
         return null;
     }
 
-    public Authentication logUserIn(Credentials credentials){
+    public synchronized ArrayList<Post> getPosts(){
+        return getPosts(null);
+    }
+
+    public synchronized boolean addPost(Post post){
+        try{
+            remote.addPost(new Gson().toJson(post));
+            return true;
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public synchronized Authentication logUserIn(Credentials credentials){
         try {
-            // Getting connection request format
-            String authRequestFormat = PANDA_ENCODING_PATTERNS.get(PandaOperation.PANDAOP_REQUEST_GET_CONNECTION);
-
-            // Creating the panda code to request the authentication object
-            // Notice that I put the 'Guest' property to false, since I'll manage the guests internally.
-            String authRequest = String.format(authRequestFormat, credentials.getUsername(), credentials.getPassword());
-
-            System.out.println(String.format("[Stub] | Requesting an auth using the panda code: '%s'.", authRequest));
+            String credentialsToJson = new Gson().toJson(credentials);
+            System.out.println(String.format("[Stub] | Requesting an auth using the credentials: '%s'.", credentials));
 
             // Deserializing the auth object using Gson
-            String authObjectToJson = stub.logUserIn(authRequest);
+            String authObjectToJson = remote.logUserIn(credentialsToJson);
             if(authObjectToJson != null){
                 // I do it here
                 Authentication auth = new Gson().fromJson(authObjectToJson, Authentication.class);
@@ -100,9 +133,27 @@ public class Stub {
         return null;
     }
 
-    public byte[] downloadPostFile(Post post){
+    public synchronized boolean logUserOut(String username){
+        System.out.println(String.format("[Stub] | Logging out user with id: '%s'.", username));
+        try{
+            remote.logUserOut(username);
+
+            // If the user logs out, I don't have his auth anymore
+            Current.auth = null;
+
+            System.out.println(String.format("[Stub] | User '%s' has logged out successfully.", username));
+            return true;
+
+        } catch (Exception e){
+            System.err.println(String.format("[Stub] | Something went wrong while logging out user '%s'.", username));
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public synchronized byte[] downloadPostFile(Post post){
         try {
-            return stub.downloadPostFile(post.getAuthorId(), post.getFileId(), post.getFileExt());
+            return remote.downloadPostFile(post.getAuthorId(), post.getFileId(), post.getFileExt());
 
         } catch (Exception e){
             e.printStackTrace();
@@ -110,24 +161,14 @@ public class Stub {
         return null;
     }
 
-    public boolean addPost(Post post){
+    public synchronized boolean serverIsAccessible(){
         try{
-            stub.addPost(new Gson().toJson(post));
-            return true;
-
-        } catch (Exception e){
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean serverIsAccessible(){
-        try{
-            return stub.serverIsAccessible();
+            return remote.serverIsAccessible();
 
         } catch (Exception e){
             return false;
         }
     }
+
 
 }

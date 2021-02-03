@@ -1,9 +1,9 @@
 /* CONTAINERS */
-
 .root-pane{
     -fx-pref-width: 850;
     -fx-spacing: 0;
     -fx-padding: 0;
+    -fx-alignment: top-center;
 }
 .flow{
     -fx-background-color: #F9F9F9;
@@ -32,14 +32,17 @@
     -fx-font-size: 13;
 }
 
-.list-post-flow {
-    -fx-pref-height: 310;
-}
-
 
 
 /* COMPONENTS */
-
+.title-logo-horizontal{
+    -fx-pref-height: 25;
+    -fx-pref-width: 123;
+    -fx-padding: 0 0 0 20;
+}
+.host-logo{
+    -fx-pref-width: 30;
+}
 .icon{
     -fx-pref-width: 20;
     -fx-border-radius: 10;
@@ -53,16 +56,26 @@
     -fx-padding: 0;
     -fx-effect: dropshadow(three-pass-box, white, 10, 0, 0, 0);
 }
+.label {
+    -fx-text-fill: black;
+}
 
 /* POST FLOW */
+.list-post-flow {
+    -fx-pref-height: 310;
+    -fx-border-color: gainsboro;
+    -fx-border-radius: 10 10 0 0;
+    -fx-background-radius: 10 10 0 0;
+}
+
 
 /* POST */
 .vbox-post{
     -fx-background-color: white;
-    -fx-border-radius: 1em;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
     -fx-padding: 10;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.25), 10, 0, 0, 0);
-
 }
     /* POST - Title */
     .hbox-post-title{
@@ -76,9 +89,11 @@
         }
             .stk-post-user-photo{
                 -fx-pref-height: 25;
-                -fx-pref-width: 25;
-                -fx-background-image: url("../images/orange.png");
+                -fx-pref-width: 30;
+                -fx-background-image: url("../images/default_user_photo.bmp");
                 -fx-background-size: cover;
+                -fx-background-radius: 100;
+                -fx-border-radius: 100;
             }
             .lb-post-user-name{
                 -fx-font-family: "SF Pro Text Bold";
@@ -115,58 +130,14 @@
                     -fx-font-size: 12;
                 }
 
-
     /* POST - File */
-    .hbox-post-file{
-        -fx-padding: 15 20 15 20;
-        -fx-alignment: center;
-        -fx-border-radius: 1em;
-        -fx-background-color: #5C93BE;
+    .lb-post-message {
+        -fx-font-family: "SF Pro Text Regular";
+        -fx-font-size: 15;
+        -fx-padding: 5 5 10 5;
+        -fx-wrap-text: true;
+        -fx-word-wrap: break-word;
     }
-        /* PDF Files */
-        .hbox-post-file.pdf{
-            -fx-background-color: #BE5C5C;
-        }
-        /* WORD Files */
-        .hbox-post-file.docx{
-            -fx-background-color: #508EFC;
-        }
-        /* EXCEL Files */
-        .hbox-post-file.xlsx{
-            -fx-background-color: #107C41;
-        }
-        /* POWERPOINT Files */
-        .hbox-post-file.pptx{
-            -fx-background-color: #FA723D;
-        }
-
-
-        .hbox-post-file-info{
-            -fx-spacing: 15;
-            -fx-alignment: center;
-        }
-            .stk-post-file-photo{
-                -fx-pref-height: 58;
-                -fx-pref-width: 54;
-                -fx-background-size: contain;
-                -fx-background-repeat: no-repeat;
-            }
-                /* PDF Files */
-                .stk-post-file-photo.pdf{
-                    -fx-background-image: url("../images/file_pdf.png");
-                }
-                /* WORD Files */
-                .stk-post-file-photo.docx{
-                    -fx-background-image: url("../images/file_docx.png");
-                }
-                /* EXCEL Files */
-                .stk-post-file-photo.xlsx{
-                    -fx-background-image: url("../images/file_xlsx.png");
-                }
-                /* POWERPOINT Files */
-                .stk-post-file-photo.pptx{
-                    -fx-background-image: url("../images/file_pptx.png");
-                }
 
 
             .vbox-post-file-name {
@@ -189,3 +160,4 @@
         .btn-post-file-download{
             -fx-background-image: url("../images/icon_download.png");
         }
+
