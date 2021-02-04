@@ -76,6 +76,11 @@
     -fx-background-size: contain;
     -fx-background-repeat: no-repeat;
 }
+.icon-stats{
+    -fx-background-image: url("../images/icon_stats.png");
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+}
 .icon-logout{
     -fx-background-image: url("../images/icon_logout.png");
     -fx-background-size: contain;

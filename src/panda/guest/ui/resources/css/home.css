@@ -161,3 +161,15 @@
             -fx-background-image: url("../images/icon_download.png");
         }
 
+.hbox-notifications {
+    -fx-padding: 10 20 10 20;
+    -fx-background-color: white;
+    -fx-spacing: 5;
+    -fx-alignment: center-left;
+}
+.lb-notification{
+    -fx-font-size: 13;
+    -fx-font-family: Consolas;
+    -fx-font-weight: bold;
+    -fx-text-fill: black;
+}

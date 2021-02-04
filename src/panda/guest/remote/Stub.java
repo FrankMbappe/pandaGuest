@@ -2,6 +2,8 @@ package panda.guest.remote;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import panda.host.models.Authentication;
 import panda.host.models.Post;
 import panda.host.models.filters.Credentials;
@@ -98,6 +100,9 @@ public class Stub {
 
     public synchronized ArrayList<Post> getPosts(){
         return getPosts(null);
+    }
+    public ObservableList<Post> getPostsToObservableList(){
+        return FXCollections.observableList(getPosts());
     }
 
     public synchronized boolean addPost(Post post){

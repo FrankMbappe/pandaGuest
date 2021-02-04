@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      styleClass="root-pane"
+      stylesheets="@../resources/css/common.css, @../resources/css/stats.css"
+      fx:controller="panda.guest.ui.controllers.StatsController">
+
+    <HBox styleClass="title-bar">
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+
+            <Button fx:id="btn_back" styleClass="image-button, icon-back, icon" onAction="#backHome" />
+
+            <Label styleClass="title-text" text="Statistics"/>
+
+        </HBox>
+
+        <StackPane HBox.hgrow="ALWAYS"/>
+
+    </HBox>
+
+    <VBox styleClass="flow">
+
+        <!-- TITLE -->
+        <Label styleClass="big-title" text="File statistics"/>
+
+        <!-- DESCRIPTION -->
+        <Label styleClass="lb-description" text="Panda enables you to check the stats of the posts added in the news feed. Here you can see what is the most uploaded type of file."/>
+
+        <LineChart fx:id="lchart_file_stats" VBox.vgrow="ALWAYS">
+            <xAxis>
+                <CategoryAxis side="BOTTOM"/>
+            </xAxis>
+            <yAxis>
+                <NumberAxis side="LEFT"/>
+            </yAxis>
+        </LineChart>
+
+    </VBox>
+
+</VBox>

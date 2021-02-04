@@ -13,6 +13,8 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.CheckBox?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <GridPane xmlns="http://javafx.com/javafx/11.0.1"
           xmlns:fx="http://javafx.com/fxml/1"
           stylesheets="@../resources/css/login.css, @../resources/css/common.css"
@@ -56,7 +58,9 @@
             <Button fx:id="btn_validate" onAction="#validate" styleClass="submit-button" text="Validate" />
             <Button fx:id="btn_joinAsGuest" onAction="#joinAsGuest" text="Join as guest" />
         </HBox>
+
     </VBox>
+
     <columnConstraints>
         <ColumnConstraints />
     </columnConstraints>

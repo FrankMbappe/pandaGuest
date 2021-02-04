@@ -4,6 +4,8 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       styleClass="root-pane"
@@ -21,6 +23,7 @@
             <Button fx:id="btn_postAdd" HBox.hgrow="NEVER" styleClass="image-button, icon-add, icon" onAction="#addPost" />
             <Button fx:id="btn_logOut" styleClass="image-button, icon-logout, icon" onAction="#logOut" />
             <Button fx:id="btn_refresh" styleClass="image-button, icon-refresh, icon" onAction="#refresh" />
+            <Button fx:id="btn_stats" styleClass="image-button, icon-stats, icon" onAction="#openStats" />
             <TextField fx:id="txt_search" styleClass="input-box-text-field" promptText="Search tags (e.g. swe, it)..." onKeyReleased="#onTxtSearchTypingIn"/>
         </HBox>
     </HBox>
@@ -116,6 +119,18 @@
 <!--            </VBox>-->
 
         </ListView>
+
+
+        <!-- NOTIFICATIONS -->
+        <HBox fx:id="hbox_isDownloadingNotif" styleClass="hbox-notifications">
+            <ImageView fitHeight="15" fitWidth="20" pickOnBounds="true" preserveRatio="true">
+                <Image url="@../resources/images/loader2.gif"/>
+            </ImageView>
+
+            <Separator orientation="VERTICAL"/>
+
+            <Label styleClass="lb-notification" text="Panda is downloading a file..."/>
+        </HBox>
 
     </VBox>
 

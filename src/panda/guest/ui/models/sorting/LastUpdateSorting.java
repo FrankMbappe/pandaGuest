@@ -7,8 +7,14 @@ import java.util.List;
 
 public class LastUpdateSorting implements PostSorting {
     @Override
-    public void sort(List<Post> posts) {
-        posts.sort(Comparator.comparing(Post::getLastUpdate));
+    public void sort(List<Post> posts, Order order) {
+        // Applying the original post order (id:ASC)
+        posts.sort(Comparator.comparing(Post::getId));
+
+        switch (order){
+            case ASC -> posts.sort(Comparator.comparing(Post::getLastUpdate));
+            case DESC -> posts.sort(Comparator.comparing(Post::getLastUpdate).reversed());
+        }
     }
 
     @Override

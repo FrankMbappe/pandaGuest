@@ -13,6 +13,7 @@ public class PostFilterByTags {
     }
 
     public ObservableList<Post> filter(ObservableList<Post> posts) {
-        return posts.filtered(post -> (post.getTagsToList().stream().anyMatch(text.toLowerCase()::contains)));
+//        return posts.filtered(post -> (post.getTagsToList().stream().anyMatch(text.toLowerCase()::contains)));
+        return posts.filtered(post -> (post.getTagsToList().stream().anyMatch(tag -> tag.toLowerCase().contains(text.toLowerCase()))));
     }
 }

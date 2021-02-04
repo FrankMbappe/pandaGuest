@@ -1,6 +1,7 @@
 package panda.guest.ui.controllers;
 
 import javafx.beans.InvalidationListener;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,7 +15,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import org.jetbrains.annotations.NotNull;
 import panda.guest.remote.Stub;
-import panda.guest.ui.controllers.data.Dummy;
 import panda.guest.ui.models.PostVBox;
 import panda.guest.ui.models.UIModel;
 import panda.guest.ui.models.filtering.PostFilterByFileExt;
@@ -22,6 +22,7 @@ import panda.guest.ui.models.filtering.PostFilterByTags;
 import panda.guest.ui.models.sorting.PostSorting;
 import panda.guest.ui.scenes.AddPostScene;
 import panda.guest.ui.scenes.LoginScene;
+import panda.guest.ui.scenes.StatsScene;
 import panda.host.models.Post;
 import panda.host.utils.Current;
 import panda.host.utils.Panda;
@@ -44,6 +45,8 @@ public class HomeController {
     public ListView<PostVBox> list_postFlow;
     public RadioButton radio_orderAsc;
     public RadioButton radio_orderDesc;
+    public HBox hbox_isDownloadingNotif;
+    public Button btn_stats;
 
     // POST - Fields
     Label lbPostUserName;
@@ -59,9 +62,6 @@ public class HomeController {
 
     public void initialize() {
 
-        // @TEST with dummy data
-        // Current.postList = Dummy.posts;
-
         // @INIT Initializing the current post list
         Current.postList.setAll(new Stub(true).getPosts());
 
@@ -73,6 +73,9 @@ public class HomeController {
 
         // Initializing my post layout
         initPostsLayout();
+
+        // Initializing other nodes
+        initOtherNodes();
 
         // Automatically updating the server status
         updateContentInRealtime();
@@ -148,13 +151,22 @@ public class HomeController {
         fillPostLayout(Current.postList);
     }
 
+    public void openStats(ActionEvent event) {
+        try {
+            switchScene(btn_stats.getScene(), new StatsScene());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void onCbSortByItemSelected(ActionEvent actionEvent) {
         // I get the sorting type depending on which one has been selected
         PostSorting sortingType = cb_sortBy.getValue();
 
         // Then I sort the displayed posts
         var displayedPosts = getDisplayedPosts();
-        if(sortingType != null) sortingType.sort(displayedPosts);
+        if(sortingType != null) sortingType.sort(displayedPosts, getSelectedOrder());
 
         // And finally, I display the result in my post layout
         fillPostLayout(displayedPosts);
@@ -179,7 +191,6 @@ public class HomeController {
     public void orderAscSelected(ActionEvent event) {
         // Inverting
         radio_orderDesc.setSelected(! radio_orderAsc.isSelected());
-        // TODO: ASC-DESC Sorting (Inverting the list each time I check one the radio button)
         onCbSortByItemSelected(event);
     }
 
@@ -218,6 +229,10 @@ public class HomeController {
 
     }
 
+    void initOtherNodes(){
+        setNodeVisibility(false, hbox_isDownloadingNotif);
+    }
+
     void applyPrivileges() {
         if (Current.auth == null || !Current.auth.isValid()){
             Panda.setNodeVisibility(false, btn_postAdd);
@@ -251,6 +266,8 @@ public class HomeController {
 
     void notifyPostListHasBeenUpdated() {
         // TODO: Display something that indicates that the list has been updated
+        list_postFlow.getItems().clear();
+        UIModel.showInfoAlert("Update", "The post list has been updated");
         System.out.println("[HomeCtrl] | The posts list has been updated.");
     }
 
@@ -266,7 +283,7 @@ public class HomeController {
                     StackPane stkPostUserPhoto = new StackPane();
                     stkPostUserPhoto.getStyleClass().add("stk-post-user-photo"); // Author.Photo
                     VBox vBoxPostUserInfo = new VBox();
-                        lbPostUserName = new Label((post.getAuthorId() != null) ? post.getAuthorId() : "PandaHost"); // Author.Name
+                        lbPostUserName = new Label((!post.getAuthorId().equals("null")) ? post.getAuthorId() : "PandaHost"); // Author.Name
                         lbPostUserName.getStyleClass().add("lb-post-user-name");
                         lbPostUserRole = new Label("Student"); // Author.Role
                         lbPostUserRole.getStyleClass().add("lb-post-user-role");
@@ -325,12 +342,13 @@ public class HomeController {
                     System.out.println(String.format("[HomeCtrl, aPost] | User requested to download '%s' from '%s'.",
                             post.getCompleteFileName(), post.getAuthorId()));
 
-                    // Downloading the file content
+                    // @Download
+                    setNodeVisibility(true, hbox_isDownloadingNotif);
                     byte[] fileContent = new Stub(true).downloadPostFile(post);
+                    setNodeVisibility(false, hbox_isDownloadingNotif);
 
                     // Saving the file
                     boolean theFileHasBeenSaved = saveFileDialog(list_postFlow, post.getFileName(), fileContent, post.getFileExt());
-                    //boolean theFileHasBeenSaved = saveFileDialog(list_postFlow, post.getFileName(), post.getFileToBytes(), post.getFileExt());
 
                     if (theFileHasBeenSaved) showInfoAlert("Your file has been downloaded and successfully saved");
 
@@ -367,4 +385,10 @@ public class HomeController {
 
         return FXCollections.observableList(displayedPosts);
     }
+
+    PostSorting.Order getSelectedOrder(){
+        if (radio_orderAsc.isSelected()) return PostSorting.Order.ASC;
+        else return PostSorting.Order.DESC;
+    }
+
 }
